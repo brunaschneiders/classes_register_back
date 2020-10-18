@@ -8,7 +8,7 @@ export default async (req, res, next) => {
   if (!authHeader) {
     return res
       .status(401)
-      .json({ response: { success: false, message: 'Token não autorizado.' } });
+      .json({ success: false, message: 'Token não autorizado.' });
   }
 
   const [, token] = authHeader.split(' ');
@@ -21,8 +21,6 @@ export default async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res
-      .status(401)
-      .json({ response: { success: false, message: 'Token inválido.' } });
+    return res.status(401).json({ success: false, message: 'Token inválido.' });
   }
 };

@@ -14,7 +14,8 @@ class GrowdeverController {
       if (userType === 'Admin') {
         if (cache) {
           return res.status(200).json({
-            response: { success: true, growdevers: JSON.parse(cache) },
+            success: true,
+            growdevers: JSON.parse(cache),
           });
         }
 
@@ -43,22 +44,18 @@ class GrowdeverController {
           );
         }
 
-        return res
-          .status(200)
-          .json({ response: { success: true, growdevers } });
+        return res.status(200).json({ success: true, growdevers });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar os dados dos Growdevers. Por favor, tente novamente.',
-          error: error.messages,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar os dados dos Growdevers. Por favor, tente novamente.',
+        error: error.messages,
       });
     }
   }
@@ -87,7 +84,7 @@ class GrowdeverController {
           ],
         });
 
-        return res.status(200).json({ response: { success: true, growdever } });
+        return res.status(200).json({ success: true, growdever });
       }
       if (userType === 'Growdever') {
         const growdever = await Growdever.findOne({
@@ -109,27 +106,23 @@ class GrowdeverController {
         });
 
         if (growdever.user.dataValues.uid === userUid) {
-          return res
-            .status(200)
-            .json({ response: { success: true, growdever } });
+          return res.status(200).json({ success: true, growdever });
         }
 
         return res
           .status(403)
-          .json({ response: { success: false, message: 'Acesso Negado.' } });
+          .json({ success: false, message: 'Acesso Negado.' });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar os dados deste Growdever. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar os dados deste Growdever. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -144,25 +137,21 @@ class GrowdeverController {
         await Cache.delete('growdevers');
 
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Growdever cadastrado com sucesso!',
-            growdever,
-          },
+          success: true,
+          message: 'Growdever cadastrado com sucesso!',
+          growdever,
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível cadastrar o Growdever. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível cadastrar o Growdever. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -179,10 +168,8 @@ class GrowdeverController {
         });
         if (!growdever) {
           return res.status(400).json({
-            response: {
-              success: false,
-              message: 'Este Growdever não foi encontrado.',
-            },
+            success: false,
+            message: 'Este Growdever não foi encontrado.',
           });
         }
 
@@ -191,25 +178,21 @@ class GrowdeverController {
         await Cache.delete('growdevers');
 
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Dados atualizados com sucesso!',
-            growdever: { email, phone, program },
-          },
+          success: true,
+          message: 'Dados atualizados com sucesso!',
+          growdever: { email, phone, program },
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível atualizar os dados do Growdever. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível atualizar os dados do Growdever. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -225,34 +208,28 @@ class GrowdeverController {
 
         if (!deleted) {
           return res.status(400).json({
-            response: {
-              success: false,
-              message: 'Este Growdever não foi encontrado.',
-            },
+            success: false,
+            message: 'Este Growdever não foi encontrado.',
           });
         }
 
         await Cache.delete('growdevers');
 
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Growdever deletado com sucesso!',
-          },
+          success: true,
+          message: 'Growdever deletado com sucesso!',
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível excluir este Growdever. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível excluir este Growdever. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }

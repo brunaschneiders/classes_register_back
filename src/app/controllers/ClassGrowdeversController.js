@@ -36,35 +36,29 @@ class ClassGrowdeverController {
           await Cache.delete('classesAndScheduledGrowdevers');
 
           return res.status(200).json({
-            response: {
-              success: true,
-              message: 'Agendamento realizado com sucesso!',
-              classGrowdever,
-            },
+            success: true,
+            message: 'Agendamento realizado com sucesso!',
+            classGrowdever,
           });
         }
 
         return res.status(400).json({
-          response: {
-            success: false,
-            message: 'Não há mais vagas disponíveis para esta aula.',
-          },
+          success: false,
+          message: 'Não há mais vagas disponíveis para esta aula.',
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       await t.rollback();
 
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível realizar este cadastro. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível realizar este cadastro. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -79,34 +73,28 @@ class ClassGrowdeverController {
         const deleted = await ClassGrowdever.destroy({ where: { uid } });
         if (!deleted) {
           return res.status(400).json({
-            response: {
-              success: false,
-              message: 'Este agendamento não foi encontrado.',
-            },
+            success: false,
+            message: 'Este agendamento não foi encontrado.',
           });
         }
 
         await Cache.delete('classesAndScheduledGrowdevers');
 
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Agendamento cancelado com sucesso!',
-          },
+          success: true,
+          message: 'Agendamento cancelado com sucesso!',
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível cancelar este agendamento. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível cancelar este agendamento. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }

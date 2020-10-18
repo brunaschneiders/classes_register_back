@@ -12,7 +12,8 @@ class UserController {
       if (userType === 'Admin') {
         if (cache) {
           return res.status(200).json({
-            response: { success: true, users: JSON.parse(cache) },
+            success: true,
+            users: JSON.parse(cache),
           });
         }
 
@@ -31,20 +32,18 @@ class UserController {
           await Cache.setExpire('users', JSON.stringify(users), 86400);
         }
 
-        return res.status(200).json({ response: { success: true, users } });
+        return res.status(200).json({ success: true, users });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar os usuários. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar os usuários. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -67,7 +66,7 @@ class UserController {
           ],
         });
 
-        return res.status(200).json({ response: { success: true, user } });
+        return res.status(200).json({ success: true, user });
       }
       if (userType === 'Growdever' && userUid === uid) {
         const user = await User.findOne({
@@ -82,20 +81,18 @@ class UserController {
           ],
         });
 
-        return res.status(200).json({ response: { success: true, user } });
+        return res.status(200).json({ success: true, user });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar este usuário. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar este usuário. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -107,7 +104,8 @@ class UserController {
       const userExist = await User.findOne({ where: { username } });
       if (userExist) {
         return res.status(400).json({
-          response: { success: false, message: 'Usuário já cadastrado.' },
+          success: false,
+          message: 'Usuário já cadastrado.',
         });
       }
 
@@ -116,20 +114,16 @@ class UserController {
       await Cache.delete('users');
 
       return res.status(200).json({
-        response: {
-          success: true,
-          message: 'Usuário cadastrado com sucesso!',
-          user,
-        },
+        success: true,
+        message: 'Usuário cadastrado com sucesso!',
+        user,
       });
     } catch (error) {
       return res.status(200).json({
-        response: {
-          success: true,
-          message:
-            'Não foi possível cadastrar o Usuário. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: true,
+        message:
+          'Não foi possível cadastrar o Usuário. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -142,14 +136,15 @@ class UserController {
       const user = await User.findByPk(uid);
       if (username !== user.username) {
         return res.status(400).json({
-          response: { success: false, message: 'Usuário não encontrado.' },
+          success: false,
+          message: 'Usuário não encontrado.',
         });
       }
 
       if (oldPassword && !(await user.checkPassword(oldPassword))) {
         return res
           .status(400)
-          .json({ response: { success: false, message: 'Senha inválida.' } });
+          .json({ success: false, message: 'Senha inválida.' });
       }
 
       const { name, type } = await user.update(req.body);
@@ -157,20 +152,16 @@ class UserController {
       await Cache.delete('users');
 
       return res.status(200).json({
-        response: {
-          success: true,
-          message: 'Dados atualizados com sucesso!',
-          user: { uid, name, type, username },
-        },
+        success: true,
+        message: 'Dados atualizados com sucesso!',
+        user: { uid, name, type, username },
       });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível atualizar a senha. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível atualizar a senha. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }

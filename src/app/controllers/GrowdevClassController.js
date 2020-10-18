@@ -12,7 +12,8 @@ class GrowdevClassController {
         const cache = await Cache.get('classesAndScheduledGrowdevers');
         if (cache) {
           return res.status(200).json({
-            response: { success: true, classes: JSON.parse(cache) },
+            success: true,
+            classes: JSON.parse(cache),
           });
         }
 
@@ -35,15 +36,14 @@ class GrowdevClassController {
             86400
           );
         }
-        return res
-          .status(200)
-          .json({ response: { success: true, classes: growdevClasses } });
+        return res.status(200).json({ success: true, classes: growdevClasses });
       }
       if (userType === 'Growdever') {
         const cache = await Cache.get('classes');
         if (cache) {
           return res.status(200).json({
-            response: { success: true, classes: JSON.parse(cache) },
+            success: true,
+            classes: JSON.parse(cache),
           });
         }
         const growdevClasses = await GrowdevClass.findAll({
@@ -58,22 +58,18 @@ class GrowdevClassController {
           );
         }
 
-        return res
-          .status(200)
-          .json({ response: { success: true, classes: growdevClasses } });
+        return res.status(200).json({ success: true, classes: growdevClasses });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar as aulas. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar as aulas. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -97,9 +93,7 @@ class GrowdevClassController {
           ],
         });
 
-        return res
-          .status(200)
-          .json({ response: { success: true, growdevClass } });
+        return res.status(200).json({ success: true, growdevClass });
       }
       if (userType === 'Growdever') {
         const growdevClass = await GrowdevClass.findOne({
@@ -107,22 +101,18 @@ class GrowdevClassController {
           attributes: ['uid', 'date', 'hour', 'status', 'available_vacancies'],
         });
 
-        return res
-          .status(200)
-          .json({ response: { success: true, growdevClass } });
+        return res.status(200).json({ success: true, growdevClass });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível buscar esta aula. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível buscar esta aula. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -138,25 +128,21 @@ class GrowdevClassController {
         await Cache.delete('classes');
 
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Aula cadastrada com sucesso!',
-            growdevClass,
-          },
+          success: true,
+          message: 'Aula cadastrada com sucesso!',
+          growdevClass,
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível cadastrar esta aula. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível cadastrar esta aula. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -173,10 +159,8 @@ class GrowdevClassController {
         });
         if (!growdevClass) {
           return res.status(400).json({
-            response: {
-              success: false,
-              message: 'Esta aula não foi encontrada.',
-            },
+            success: false,
+            message: 'Esta aula não foi encontrada.',
           });
         }
 
@@ -185,11 +169,9 @@ class GrowdevClassController {
 
         const { date, hour, status, available_vacancies } = req.body;
         return res.status(200).json({
-          response: {
-            success: true,
-            message: 'Dados atualizados com sucesso!',
-            growdevClass: { date, hour, status, available_vacancies },
-          },
+          success: true,
+          message: 'Dados atualizados com sucesso!',
+          growdevClass: { date, hour, status, available_vacancies },
         });
       }
 
@@ -198,12 +180,10 @@ class GrowdevClassController {
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível atualizar os dados desta aula. Por favor, revise os dados e tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível atualizar os dados desta aula. Por favor, revise os dados e tente novamente.',
+        error: error.message,
       });
     }
   }
@@ -226,21 +206,20 @@ class GrowdevClassController {
         await Cache.delete('classes');
 
         return res.status(200).json({
-          response: { success: true, message: 'Aula cancelada com sucesso!' },
+          success: true,
+          message: 'Aula cancelada com sucesso!',
         });
       }
 
       return res
         .status(403)
-        .json({ response: { success: false, message: 'Acesso Negado.' } });
+        .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       return res.status(400).json({
-        response: {
-          success: false,
-          message:
-            'Não foi possível cancelar esta aula. Por favor, tente novamente.',
-          error: error.message,
-        },
+        success: false,
+        message:
+          'Não foi possível cancelar esta aula. Por favor, tente novamente.',
+        error: error.message,
       });
     }
   }
