@@ -134,6 +134,7 @@ class GrowdeverController {
       if (userType === 'Admin') {
         const growdever = await Growdever.create(req.body);
 
+        await Cache.delete('users');
         await Cache.delete('growdevers');
 
         return res.status(200).json({
@@ -175,6 +176,7 @@ class GrowdeverController {
 
         const { email, phone, program } = req.body;
 
+        await Cache.delete('users');
         await Cache.delete('growdevers');
 
         return res.status(200).json({
@@ -213,6 +215,7 @@ class GrowdeverController {
           });
         }
 
+        await Cache.delete('users');
         await Cache.delete('growdevers');
 
         return res.status(200).json({
@@ -228,7 +231,7 @@ class GrowdeverController {
       return res.status(400).json({
         success: false,
         message:
-          'Não foi possível excluir este Growdever. Por favor, tente novamente.',
+          'Não foi possível deletar este Growdever. Por favor, tente novamente.',
         error: error.message,
       });
     }

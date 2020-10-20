@@ -2,43 +2,14 @@ import GrowdevClass from '../models/GrowdevClass';
 import ClassGrowdever from '../models/ClassGrowdever';
 import Growdever from '../models/Growdever';
 import Cache from '../../lib/Cache';
+import User from '../models/User';
 
 class GrowdevClassController {
   async index(req, res) {
     try {
       const { userType } = req;
 
-      if (userType === 'Admin') {
-        const cache = await Cache.get('classesAndScheduledGrowdevers');
-        if (cache) {
-          return res.status(200).json({
-            success: true,
-            classes: JSON.parse(cache),
-          });
-        }
-
-        const growdevClasses = await GrowdevClass.findAll({
-          attributes: ['uid', 'date', 'hour', 'status', 'available_vacancies'],
-          include: [
-            {
-              model: ClassGrowdever,
-              as: 'scheduled_class',
-              attributes: ['uid', 'status'],
-              include: [{ model: Growdever, as: 'growdever' }],
-            },
-          ],
-        });
-
-        if (growdevClasses.length > 0) {
-          await Cache.setExpire(
-            'classesAndScheduledGrowdevers',
-            JSON.stringify(growdevClasses),
-            86400
-          );
-        }
-        return res.status(200).json({ success: true, classes: growdevClasses });
-      }
-      if (userType === 'Growdever') {
+      if (userType === 'Admin' || userType === 'Growdever') {
         const cache = await Cache.get('classes');
         if (cache) {
           return res.status(200).json({
@@ -88,7 +59,19 @@ class GrowdevClassController {
               model: ClassGrowdever,
               as: 'scheduled_class',
               attributes: ['uid', 'status'],
-              include: [{ model: Growdever, as: 'growdever' }],
+              include: [
+                {
+                  model: Growdever,
+                  as: 'growdever',
+                  include: [
+                    {
+                      model: User,
+                      as: 'user',
+                      attributes: ['uid', 'name', 'type', 'username'],
+                    },
+                  ],
+                },
+              ],
             },
           ],
         });
@@ -124,7 +107,6 @@ class GrowdevClassController {
       if (userType === 'Admin') {
         const growdevClass = await GrowdevClass.create(req.body);
 
-        await Cache.delete('classesAndScheduledGrowdevers');
         await Cache.delete('classes');
 
         return res.status(200).json({
@@ -164,7 +146,6 @@ class GrowdevClassController {
           });
         }
 
-        await Cache.delete('classesAndScheduledGrowdevers');
         await Cache.delete('classes');
 
         const { date, hour, status, available_vacancies } = req.body;
@@ -202,7 +183,6 @@ class GrowdevClassController {
             .json({ success: false, message: 'Esta aula não foi encontrada.' });
         }
 
-        await Cache.delete('classesAndScheduledGrowdevers');
         await Cache.delete('classes');
 
         return res.status(200).json({

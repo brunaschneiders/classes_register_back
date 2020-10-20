@@ -165,6 +165,43 @@ class UserController {
       });
     }
   }
+
+  async delete(req, res) {
+    try {
+      const { userType } = req;
+
+      if (userType === 'Admin') {
+        const { uid } = req.params;
+
+        const deleted = await User.destroy({ where: { uid } });
+
+        if (!deleted) {
+          return res.status(400).json({
+            success: false,
+            message: 'Este usuário não foi encontrado.',
+          });
+        }
+
+        await Cache.delete('users');
+
+        return res.status(200).json({
+          success: true,
+          message: 'Usuário deletado com sucesso!',
+        });
+      }
+
+      return res
+        .status(403)
+        .json({ success: false, message: 'Acesso Negado.' });
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Não foi possível deletar este usuário. Por favor, tente novamente.',
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default new UserController();

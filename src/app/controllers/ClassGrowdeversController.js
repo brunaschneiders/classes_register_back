@@ -33,7 +33,7 @@ class ClassGrowdeverController {
 
           await t.commit();
 
-          await Cache.delete('classesAndScheduledGrowdevers');
+          await Cache.delete('classes');
 
           return res.status(200).json({
             success: true,
@@ -78,7 +78,7 @@ class ClassGrowdeverController {
           });
         }
 
-        await Cache.delete('classesAndScheduledGrowdevers');
+        await Cache.delete('classes');
 
         return res.status(200).json({
           success: true,
@@ -94,6 +94,46 @@ class ClassGrowdeverController {
         success: false,
         message:
           'Não foi possível cancelar este agendamento. Por favor, tente novamente.',
+        error: error.message,
+      });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { userType } = req;
+
+      if (userType === 'Admin') {
+        const { uid } = req.params;
+
+        const [scheduledClass] = await ClassGrowdever.update(req.body, {
+          where: { uid },
+        });
+        if (!scheduledClass) {
+          return res.status(400).json({
+            success: false,
+            message: 'Este agendamento não foi encontrado.',
+          });
+        }
+
+        await Cache.delete('classes');
+
+        const { status } = req.body;
+        return res.status(200).json({
+          success: true,
+          message: 'Dados atualizados com sucesso!',
+          scheduledClass: { status },
+        });
+      }
+
+      return res
+        .status(403)
+        .json({ success: false, message: 'Acesso Negado.' });
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Não foi possível atualizar os dados deste agendamento. Por favor, revise os dados e tente novamente.',
         error: error.message,
       });
     }

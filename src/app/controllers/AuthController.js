@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import Growdever from '../models/Growdever';
 import authConfig from '../../config/auth';
 
 class AuthController {
@@ -7,7 +8,17 @@ class AuthController {
     try {
       const { username, password } = req.body;
 
-      const user = await User.findOne({ where: { username } });
+      const user = await User.findOne({
+        where: { username },
+        attributes: ['uid', 'name', 'type', 'username'],
+        include: [
+          {
+            model: Growdever,
+            as: 'growdever',
+            attributes: ['uid', 'email', 'phone', 'program'],
+          },
+        ],
+      });
 
       if (!user) {
         return res
@@ -21,16 +32,11 @@ class AuthController {
           .json({ success: false, message: 'Senha inválida.' });
       }
 
-      const { uid, name, type } = user;
+      const { uid, type } = user;
 
       return res.status(200).json({
         success: true,
-        user: {
-          uid,
-          name,
-          username,
-          type,
-        },
+        user,
         token: jwt.sign({ uid, type }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
         }),

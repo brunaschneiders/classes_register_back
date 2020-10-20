@@ -23,9 +23,10 @@ routes.post('/login', AuthController.store);
 routes.use(authMiddleware);
 
 // ROUTES PARA USER(auth)
-routes.put('/users/:uid', UserController.update);
 routes.get('/users', UserController.index);
 routes.get('/users/:uid', UserController.show);
+routes.put('/users/:uid', UserController.update);
+routes.delete('/users/:uid', UserController.delete);
 
 // ROUTES PARA GROWDEVER (auth)
 
@@ -46,6 +47,7 @@ routes.delete('/classes/:uid', GrowdevClassController.delete);
 // ROUTES PARA CLASSGROWDEVER (auth)
 
 routes.post('/class-growdevers', ClassGrowdeversController.store);
+routes.put('/class-growdevers/:uid', ClassGrowdeversController.update);
 routes.delete('/class-growdevers/:uid', ClassGrowdeversController.delete);
 
 export default routes;
