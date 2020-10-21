@@ -10,7 +10,6 @@ class AuthController {
 
       const user = await User.findOne({
         where: { username },
-        attributes: ['uid', 'name', 'type', 'username'],
         include: [
           {
             model: Growdever,
@@ -32,11 +31,17 @@ class AuthController {
           .json({ success: false, message: 'Senha inválida.' });
       }
 
-      const { uid, type } = user;
+      const { uid, name, type, growdever } = user;
 
       return res.status(200).json({
         success: true,
-        user,
+        user: {
+          uid,
+          name,
+          type,
+          username,
+          growdever,
+        },
         token: jwt.sign({ uid, type }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
         }),

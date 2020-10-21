@@ -153,7 +153,7 @@ class UserController {
 
       return res.status(200).json({
         success: true,
-        message: 'Dados atualizados com sucesso!',
+        message: 'Senha atualizada com sucesso!',
         user: { uid, name, type, username },
       });
     } catch (error) {
@@ -183,6 +183,7 @@ class UserController {
         }
 
         await Cache.delete('users');
+        await Cache.delete('growdevers');
 
         return res.status(200).json({
           success: true,

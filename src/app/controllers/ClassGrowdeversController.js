@@ -1,6 +1,7 @@
 import ClassGrowdever from '../models/ClassGrowdever';
 import GrowdevClass from '../models/GrowdevClass';
 import Cache from '../../lib/Cache';
+import Growdever from '../models/Growdever';
 
 class ClassGrowdeverController {
   async store(req, res) {
@@ -10,44 +11,63 @@ class ClassGrowdeverController {
       const { userType } = req;
 
       if (userType === 'Admin' || userType === 'Growdever') {
-        const { class_uid } = req.body;
+        const { growdever_uid, class_uid } = req.body;
 
         const classData = await GrowdevClass.findByPk(class_uid);
-
-        const classAvailableVacancies =
-          classData?.dataValues?.available_vacancies;
-        if (classAvailableVacancies > 0) {
-          const classGrowdever = await ClassGrowdever.create(req.body, {
-            transaction: t,
-          });
-
-          await GrowdevClass.update(
+        const growdeverData = await Growdever.findOne({
+          where: { uid: growdever_uid },
+          include: [
             {
-              available_vacancies: classAvailableVacancies - 1,
+              model: ClassGrowdever,
+              as: 'scheduled_classes',
+              attributes: ['uid', 'status'],
+              include: [{ model: GrowdevClass, as: 'class' }],
             },
-            {
-              where: { uid: class_uid },
-            },
-            { transaction: t }
-          );
+          ],
+        });
+        const schedules = growdeverData?.dataValues?.scheduled_classes;
+        const scheduledClasses = schedules.map((schedule) => schedule.class);
+        const classAlreadyScheduled = scheduledClasses.filter(
+          (growdevClass) => growdevClass.uid === class_uid
+        );
+        if (classAlreadyScheduled.length === 0) {
+          const classAvailableVacancies =
+            classData?.dataValues?.available_vacancies;
+          if (classAvailableVacancies > 0) {
+            const classGrowdever = await ClassGrowdever.create(req.body, {
+              transaction: t,
+            });
 
-          await t.commit();
+            await GrowdevClass.update(
+              {
+                available_vacancies: classAvailableVacancies - 1,
+              },
+              {
+                where: { uid: class_uid },
+              },
+              { transaction: t }
+            );
 
-          await Cache.delete('classes');
+            await t.commit();
 
-          return res.status(200).json({
-            success: true,
-            message: 'Agendamento realizado com sucesso!',
-            classGrowdever,
+            await Cache.delete('classes');
+
+            return res.status(200).json({
+              success: true,
+              message: 'Agendamento realizado com sucesso!',
+            });
+          }
+
+          return res.status(400).json({
+            success: false,
+            message: 'Não há mais vagas disponíveis para esta aula.',
           });
         }
-
         return res.status(400).json({
           success: false,
-          message: 'Não há mais vagas disponíveis para esta aula.',
+          message: 'Você já está inscrito nesta aula.',
         });
       }
-
       return res
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
@@ -64,13 +84,33 @@ class ClassGrowdeverController {
   }
 
   async delete(req, res) {
+    const t = await ClassGrowdever.sequelize.transaction();
     try {
       const { userType } = req;
 
       if (userType === 'Admin' || userType === 'Growdever') {
         const { uid } = req.params;
 
-        const deleted = await ClassGrowdever.destroy({ where: { uid } });
+        const scheduleData = await ClassGrowdever.findByPk(uid);
+        const scheduleClassUid = scheduleData.dataValues.class_uid;
+        const scheduleClassData = await GrowdevClass.findByPk(scheduleClassUid);
+        const classAvailableVacancies =
+          scheduleClassData?.dataValues?.available_vacancies;
+
+        await GrowdevClass.update(
+          {
+            available_vacancies: classAvailableVacancies + 1,
+          },
+          {
+            where: { uid: scheduleClassUid },
+          },
+          { transaction: t }
+        );
+
+        const deleted = await ClassGrowdever.destroy(
+          { where: { uid } },
+          { transaction: t }
+        );
         if (!deleted) {
           return res.status(400).json({
             success: false,
@@ -78,6 +118,7 @@ class ClassGrowdeverController {
           });
         }
 
+        await t.commit();
         await Cache.delete('classes');
 
         return res.status(200).json({
@@ -90,6 +131,7 @@ class ClassGrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
+      await t.rollback();
       return res.status(400).json({
         success: false,
         message:

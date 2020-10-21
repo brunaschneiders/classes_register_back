@@ -159,11 +159,9 @@ class GrowdeverController {
 
   async update(req, res) {
     try {
-      const { userType } = req;
-
+      const { userType, userUid } = req;
+      const { uid } = req.params;
       if (userType === 'Admin') {
-        const { uid } = req.params;
-
         const [growdever] = await Growdever.update(req.body, {
           where: { uid },
         });
@@ -184,6 +182,45 @@ class GrowdeverController {
           message: 'Dados atualizados com sucesso!',
           growdever: { email, phone, program },
         });
+      }
+      if (userType === 'Growdever') {
+        const growdeverToBeUpdate = await Growdever.findOne({
+          where: { uid },
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['uid'],
+            },
+          ],
+        });
+
+        const userUidToBeUpdate = growdeverToBeUpdate?.user?.dataValues?.uid;
+        if (userUid === userUidToBeUpdate) {
+          const [growdever] = await Growdever.update(req.body, {
+            where: { uid },
+          });
+          if (!growdever) {
+            return res.status(400).json({
+              success: false,
+              message: 'Este Growdever não foi encontrado.',
+            });
+          }
+
+          const { email, phone, program } = req.body;
+
+          await Cache.delete('users');
+          await Cache.delete('growdevers');
+
+          return res.status(200).json({
+            success: true,
+            message: 'Dados atualizados com sucesso!',
+            growdever: { email, phone, program },
+          });
+        }
+        return res
+          .status(403)
+          .json({ success: false, message: 'Acesso Negado.' });
       }
 
       return res
