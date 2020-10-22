@@ -215,7 +215,7 @@ class GrowdeverController {
           return res.status(200).json({
             success: true,
             message: 'Dados atualizados com sucesso!',
-            growdever: { email, phone, program },
+            growdever: { uid, email, phone, program },
           });
         }
         return res

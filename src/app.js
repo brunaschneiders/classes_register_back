@@ -6,11 +6,11 @@ import './database';
 class App {
   constructor() {
     this.server = express();
-    this.middlawares();
+    this.middleware();
     this.routes();
   }
 
-  middlawares() {
+  middleware() {
     this.server.use(express.json());
   }
 
