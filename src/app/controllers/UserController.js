@@ -39,7 +39,7 @@ class UserController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível buscar os usuários. Por favor, tente novamente.',
@@ -88,7 +88,7 @@ class UserController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível buscar este usuário. Por favor, tente novamente.',
@@ -103,7 +103,7 @@ class UserController {
 
       const userExist = await User.findOne({ where: { username } });
       if (userExist) {
-        return res.status(400).json({
+        return res.status(404).json({
           success: false,
           message: 'Usuário já cadastrado.',
         });
@@ -119,8 +119,8 @@ class UserController {
         user,
       });
     } catch (error) {
-      return res.status(200).json({
-        success: true,
+      return res.status(404).json({
+        success: false,
         message:
           'Não foi possível cadastrar o Usuário. Por favor, revise os dados e tente novamente.',
         error: error.message,
@@ -135,7 +135,7 @@ class UserController {
 
       const user = await User.findByPk(uid);
       if (username !== user.username) {
-        return res.status(400).json({
+        return res.status(404).json({
           success: false,
           message: 'Usuário não encontrado.',
         });
@@ -143,7 +143,7 @@ class UserController {
 
       if (oldPassword && !(await user.checkPassword(oldPassword))) {
         return res
-          .status(400)
+          .status(404)
           .json({ success: false, message: 'Senha inválida.' });
       }
 
@@ -157,7 +157,7 @@ class UserController {
         user: { uid, name, type, username },
       });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível atualizar a senha. Por favor, tente novamente.',
@@ -176,7 +176,7 @@ class UserController {
         const deleted = await User.destroy({ where: { uid } });
 
         if (!deleted) {
-          return res.status(400).json({
+          return res.status(404).json({
             success: false,
             message: 'Este usuário não foi encontrado.',
           });
@@ -195,7 +195,7 @@ class UserController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível deletar este usuário. Por favor, tente novamente.',

@@ -36,7 +36,7 @@ class GrowdevClassController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível buscar as aulas. Por favor, tente novamente.',
@@ -91,7 +91,7 @@ class GrowdevClassController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível buscar esta aula. Por favor, tente novamente.',
@@ -120,7 +120,7 @@ class GrowdevClassController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível cadastrar esta aula. Por favor, revise os dados e tente novamente.',
@@ -140,7 +140,7 @@ class GrowdevClassController {
           where: { uid },
         });
         if (!growdevClass) {
-          return res.status(400).json({
+          return res.status(404).json({
             success: false,
             message: 'Esta aula não foi encontrada.',
           });
@@ -160,7 +160,7 @@ class GrowdevClassController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível atualizar os dados desta aula. Por favor, revise os dados e tente novamente.',
@@ -179,7 +179,7 @@ class GrowdevClassController {
         const deleted = await GrowdevClass.destroy({ where: { uid } });
         if (!deleted) {
           return res
-            .status(400)
+            .status(404)
             .json({ success: false, message: 'Esta aula não foi encontrada.' });
         }
 
@@ -195,7 +195,7 @@ class GrowdevClassController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível cancelar esta aula. Por favor, tente novamente.',

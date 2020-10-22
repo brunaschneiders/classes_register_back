@@ -20,7 +20,7 @@ routes.post('/users', UserController.store);
 // // ROUTES PARA AUTH
 routes.post('/login', AuthController.store);
 
-routes.use(authMiddleware);
+// routes.use(authMiddleware);
 
 // ROUTES PARA USER(auth)
 routes.get('/users', UserController.index);

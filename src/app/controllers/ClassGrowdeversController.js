@@ -58,12 +58,12 @@ class ClassGrowdeverController {
             });
           }
 
-          return res.status(400).json({
+          return res.status(404).json({
             success: false,
             message: 'Não há mais vagas disponíveis para esta aula.',
           });
         }
-        return res.status(400).json({
+        return res.status(404).json({
           success: false,
           message: 'Você já está inscrito nesta aula.',
         });
@@ -74,7 +74,7 @@ class ClassGrowdeverController {
     } catch (error) {
       await t.rollback();
 
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível realizar este cadastro. Por favor, revise os dados e tente novamente.',
@@ -112,7 +112,7 @@ class ClassGrowdeverController {
           { transaction: t }
         );
         if (!deleted) {
-          return res.status(400).json({
+          return res.status(404).json({
             success: false,
             message: 'Este agendamento não foi encontrado.',
           });
@@ -132,7 +132,7 @@ class ClassGrowdeverController {
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
       await t.rollback();
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível cancelar este agendamento. Por favor, tente novamente.',
@@ -152,7 +152,7 @@ class ClassGrowdeverController {
           where: { uid },
         });
         if (!scheduledClass) {
-          return res.status(400).json({
+          return res.status(404).json({
             success: false,
             message: 'Este agendamento não foi encontrado.',
           });
@@ -172,7 +172,7 @@ class ClassGrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message:
           'Não foi possível atualizar os dados deste agendamento. Por favor, revise os dados e tente novamente.',
