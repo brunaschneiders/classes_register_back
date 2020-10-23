@@ -8,7 +8,7 @@ class UserController {
       const cache = await Cache.get('users');
 
       const { userType } = req;
-      console.log(userType);
+
       if (userType === 'Admin') {
         if (cache) {
           return res.status(200).json({
