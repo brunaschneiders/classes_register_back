@@ -51,7 +51,7 @@ class GrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível buscar os dados dos Growdevers. Por favor, tente novamente.',
@@ -118,7 +118,7 @@ class GrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível buscar os dados deste Growdever. Por favor, tente novamente.',
@@ -148,7 +148,7 @@ class GrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível cadastrar o Growdever. Por favor, revise os dados e tente novamente.',
@@ -166,7 +166,7 @@ class GrowdeverController {
           where: { uid },
         });
         if (!growdever) {
-          return res.status(404).json({
+          return res.status(400).json({
             success: false,
             message: 'Este Growdever não foi encontrado.',
           });
@@ -201,7 +201,7 @@ class GrowdeverController {
             where: { uid },
           });
           if (!growdever) {
-            return res.status(404).json({
+            return res.status(400).json({
               success: false,
               message: 'Este Growdever não foi encontrado.',
             });
@@ -227,7 +227,7 @@ class GrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível atualizar os dados do Growdever. Por favor, revise os dados e tente novamente.',
@@ -246,7 +246,7 @@ class GrowdeverController {
         const deleted = await Growdever.destroy({ where: { uid } });
 
         if (!deleted) {
-          return res.status(404).json({
+          return res.status(400).json({
             success: false,
             message: 'Este Growdever não foi encontrado.',
           });
@@ -265,7 +265,7 @@ class GrowdeverController {
         .status(403)
         .json({ success: false, message: 'Acesso Negado.' });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível deletar este Growdever. Por favor, tente novamente.',

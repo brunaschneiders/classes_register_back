@@ -21,13 +21,13 @@ class AuthController {
 
       if (!user) {
         return res
-          .status(404)
+          .status(400)
           .json({ success: false, message: 'Usuário não encontrado.' });
       }
 
       if (!(await user.checkPassword(password))) {
         return res
-          .status(404)
+          .status(400)
           .json({ success: false, message: 'Senha inválida.' });
       }
 
@@ -47,7 +47,7 @@ class AuthController {
         }),
       });
     } catch (error) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message:
           'Não foi possível realizar o login. Por favor, tente novamente.',
