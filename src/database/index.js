@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
-import dataBaseConfig from '../config/database';
+import 'dotenv/config';
+import databaseConfig from '../config/database';
 import User from '../app/models/User';
 import Growdever from '../app/models/Growdever';
 import GrowdevClass from '../app/models/GrowdevClass';
@@ -13,11 +14,7 @@ class DataBase {
   }
 
   init() {
-    if (process.env.NODE_ENV === 'test') {
-      this.connection = new Sequelize(dataBaseConfig);
-    } else {
-      this.connection = new Sequelize(process.env.DATABASE_URL, dataBaseConfig);
-    }
+    this.connection = new Sequelize(process.env.DATABASE_URL, databaseConfig);
 
     models
       .map((model) => model.init(this.connection))
